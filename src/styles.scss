@@ -1,1 +1,46 @@
 /* You can add global styles to this file, and also import other style files */
+@import "~@ag-grid-community/core/dist/styles/ag-grid.css";
+@import "~@ag-grid-community/core/dist/styles/ag-theme-alpine.css";
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+@import '@ag-grid-community/core/dist/styles/ag-grid.css';
+@import '@ag-grid-community/core/dist/styles/ag-theme-alpine.css';
+
+@import "~bootstrap/dist/css/bootstrap.css";
+
+
+@import '~bootstrap/dist/css/bootstrap-grid.css';
+@import '~bootstrap/scss/bootstrap';
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+
+.ag-theme-alpine .ag-root-wrapper {
+    border: 1px solid #306FAE;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-color: var(--ag-border-color, #babfc7);
+}
+
+.customHeight {
+    height: calc(90.6vh - 75px);
+    margin: 0px 0px;
+   
+}
+
+.container-height {
+    margin: 0px 0px;
+}
+
+.f-right {
+    float: right;
+}
+
+a {
+    cursor: pointer;
+}
+
+.customHeights {
+    height: calc(52vh - 40px);
+    margin: 0px 0px;
+}
