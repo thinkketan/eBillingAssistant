@@ -1,10 +1,10 @@
 <div class="body">
-    <ol class="breadcrumb" style="margin-left: 22px;">
+    <ol class="breadcrumb">
         <li class="breadcrumb-item" (click)="onBack()" style="color: blue; cursor: pointer;"> Invoice List</li>
         <li class="breadcrumb-item " aria-current="page">Invoice Details</li>
     </ol>
     <div class="row row-cols-1 row-cols-md-4 g-2 mx-3">
-        <div class="col">
+        <div class="col-md-2">
             <div class="card table1 invoiceDetail allcart">
                 <div class="header">
                     <h6> {{invoiceHeader}} </h6>
@@ -36,7 +36,7 @@
                 </div>
             </div>
         </div>
-        <div class="col">
+        <div class="col-md-3">
             <div class="card table1 firmDetails allcart">
                 <div class="header">
                     <h6>{{firmHeader}} </h6>
@@ -63,7 +63,7 @@
                 </div>
             </div>
         </div>
-        <div class="col">
+        <div class="col-md-4">
             <div class="card text matterDetails allcart">
                 <div class="header">
                     <h6> {{matterHeader}} </h6>
@@ -104,8 +104,8 @@
                 </div>
             </div>
         </div>
-        <div class="col">
-            <div class="card finalTable ">
+        <div class="col-md-3">
+            <div class="card finalTable allcart">
                 <div class=" table-responsive">
                     <table class="table table-bordered  m-auto table1" style="display:table">
                         <thead style="background: #E6E6E6;">
