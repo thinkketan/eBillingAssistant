@@ -86,6 +86,7 @@ export class InvoiceDetailsComponent implements OnInit {
   public headerInvoiceDetails: any;
 
   constructor(private route: ActivatedRoute, private router: Router, private invoicingService: InvoiceService) {
+    this.id = this.route.snapshot.queryParams.Id;
     this.discount = 0;
     this.expenses = 0;
     this.invoiceHeader = invoiceDetails.INVOICE_HEADER;
@@ -121,7 +122,6 @@ export class InvoiceDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getData();
     this.getGridConfig();
     const invoiceDetails: any = localStorage.getItem('invoicedetail');
     const invoiceData = JSON.parse(invoiceDetails);
@@ -132,6 +132,7 @@ export class InvoiceDetailsComponent implements OnInit {
     this.matterName = invoiceData.MatterName || this.nullValueSet;
     this.client = invoiceData.ClientName || this.nullValueSet;
     this.firmClient = invoiceData.LawFirmName || this.nullValueSet;
+    this.getData();
   }
 
   private getGridConfig() {
@@ -139,7 +140,6 @@ export class InvoiceDetailsComponent implements OnInit {
     this.agGridOption = {
       defaultColDef: { flex: 1, minWidth: 150, sortable: true, filter: 'agTextColumnFilter', resizable: true, sortingOrder: ["asc", "desc"], menuTabs: [], floatingFilter: true, editable: true, },
       rowSelection: 'multiple',
-      enableMultiRowDragging: true,
       suppressRowClickSelection: true,
       rowDragManaged: true,
       suppressMoveWhenRowDragging: true,
@@ -149,11 +149,9 @@ export class InvoiceDetailsComponent implements OnInit {
       groupSelectsChildren: true,
       groupDefaultExpanded: 1,
       unSortIcon: true,
+      pagination: false,
       context: { componentParent: this },
       suppressContextMenu: true,
-      getRowNodeId: function (data: any) {
-        return data.id;
-      },
       //noRowsOverlayComponentFramework: NoRowOverlayComponent,
       noRowsOverlayComponentParams: { noRowsMessageFunc: () => this.rowData && this.rowData.length ? 'No matching records found for the required search' : 'No invoice details to display' },
       onModelUpdated,
@@ -282,7 +280,7 @@ export class InvoiceDetailsComponent implements OnInit {
     return date1Number - date2Number;
   }
 
-  
+
   private monthToComparableNumber(date: any) {
     if (date === undefined || date === null || date.length !== 10) {
       return null;
@@ -294,64 +292,76 @@ export class InvoiceDetailsComponent implements OnInit {
     return result;
   }
 
-  private getData() {
-    this.id = this.route.snapshot.queryParams.Id;
+  getData() {
     this.invoicingService.getInvoiceDataDetails(this.id)
       .subscribe((response: any) => {
+        this.calFinalValue()
         this.startDate = this.myDateParser(response[0].StartDate) || this.nullValueSet;
         this.endDate = this.myDateParser(response[0].EndDate) || this.nullValueSet;
         this.invoiceFormat = response[0].InvoiceFormat || this.nullValueSet;
         this.isFinal = response[0].IsFinal || this.nullValueSet;
         this.tags = response[0].Tags || this.nullValueSet;
         this.ruleCode = response[0].RuleCode || this.nullValueSet;
-
-        this.invoicingService.getInvoiceDetails(this.id)
-          .subscribe((response) => {
-            this.data = response;
-            this.rowData = this.data;
-            let sum = 0;
-            for (var i in this.data) {
-              sum += parseFloat(this.data[i].TotalOld);
-            }
-            this.totalOld = sum || 0;
-
-            let old = 0;
-            for (var i in this.data) {
-              old += parseFloat(this.data[i].Total);
-            }
-            this.total = old || 0;
-            this.change = this.totalOld - this.total || 0;
-            let des = 0;
-            for (var i in this.data) {
-              des += parseFloat(this.data[i].Discounts);
-              this.dess = des;
-            }
-
-            this.discount = this.dess || 0;
-            this.original = this.totalOld + this.discount + this.expenses || 0;
-            this.changeValue = this.change + this.discount + this.expenses || 0;
-            this.final = this.total + this.discount + this.expenses || 0;
-          })
+       
       })
+  }
+
+  calFinalValue() {
+    const subscription = this.invoicingService.getInvoiceDetails(this.id)
+      .subscribe((response) => {
+        this.data = response;
+        this.rowData = this.data;
+        let sum = 0;
+        for (var i in this.data) {
+          sum += parseFloat(this.data[i].TotalOld);
+        }
+        this.totalOld = sum || 0;
+
+        let old = 0;
+        for (var i in this.data) {
+          old += parseFloat(this.data[i].Total);
+        }
+        this.total = old || 0;
+        this.change = this.totalOld - this.total || 0;
+        let des = 0;
+        for (var i in this.data) {
+          des += parseFloat(this.data[i].Discounts);
+          this.dess = des;
+        }
+        this.discount = this.dess || 0;
+        this.original = this.totalOld + this.discount + this.expenses || 0;
+        this.changeValue = this.change + this.discount + this.expenses || 0;
+        this.final = this.total + this.discount + this.expenses || 0;
+        console.log('find check data==>', this.data);
+        console.log('find check data22222==>', this.changeValue);
+      }, () => {
+        subscription.unsubscribe();
+      });
   }
 
   private autoSizeAll() {
     let allColumnIds: any[] = [];
     let gridColumnApi = this.gridApi.columnApi
-    gridColumnApi.getAllColumns().forEach(function (column: any) {
-      allColumnIds.push(column.colId);
-    });
-    gridColumnApi.autoSizeColumns(allColumnIds);
+    if (gridColumnApi) {
+      gridColumnApi.getAllColumns().forEach(function (column: any) {
+        allColumnIds.push(column.colId);
+      });
+      gridColumnApi.autoSizeColumns(allColumnIds);
+    }
+
   }
 
   private setGridColSizeAsPerWidth() {
     setTimeout(() => {
       this.autoSizeAll();
       let width = 0;
-      let gridColumnApi = this.gridApi.columnApi
-      gridColumnApi.getAllColumns().forEach(function (column: any) {
-        width = width + column.getActualWidth();
-      });
+      let gridColumnApi = this.gridApi.columnApi;
+      if (gridColumnApi) {
+        gridColumnApi.getAllColumns().forEach(function (column: any) {
+          width = width + column.getActualWidth();
+        });
+      }
+
       if (this.agGridDiv && width < this.agGridDiv.nativeElement.offsetWidth)
         this.gridApi.api.sizeColumnsToFit();
     }, 1);

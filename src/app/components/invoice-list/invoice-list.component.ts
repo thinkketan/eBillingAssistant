@@ -2,11 +2,9 @@ import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular
 import { AllCommunityModules, GridOptions, IDatasource, IGetRowsParams, Module } from '@ag-grid-community/all-modules';
 import { SetFilterModule } from '@ag-grid-enterprise/set-filter';
 import { MenuModule } from '@ag-grid-enterprise/menu';
-//import { InvoiceCodeComponentComponent } from 'src/app/agGridComponents/invoice-code-component/invoice-code-component.component';
 import { Router } from '@angular/router';
 import { invoiceList, casecading } from '../../shared/constant-file';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { ServerSideRowModelModule, ColumnsToolPanelModule } from '@ag-grid-enterprise/all-modules';
 import { InvoiceService } from '../../services/invoice.service';
 import { CellAggridComponent } from '../cell-aggrid/cell-aggrid.component';
@@ -17,8 +15,11 @@ import { CellAggridComponent } from '../cell-aggrid/cell-aggrid.component';
   styleUrls: ['./invoice-list.component.scss']
 })
 export class InvoiceListComponent implements OnInit {
-  @HostListener('window:resize', ['$event'])
   @ViewChild('agGridParentDiv', { read: ElementRef }) public agGridDiv: any;
+  @HostListener('window:resize', ['$event'])
+  public onResize(event: any) {
+    this.setGridColSizeAsPerWidth();
+  }
   public modules: Module[] = [...AllCommunityModules, ...[SetFilterModule, MenuModule, ServerSideRowModelModule, ColumnsToolPanelModule]]
   public agGridOption: any;
   public rowData: any;
@@ -37,6 +38,7 @@ export class InvoiceListComponent implements OnInit {
   apiSuccessFull: any;
   gridColumnApi: any;
   filterData: any;
+  
 
   constructor(private router: Router, private invoicingService: InvoiceService, private formBuilder: FormBuilder,) {
     this.rowModelType = 'serverSide';
@@ -47,11 +49,7 @@ export class InvoiceListComponent implements OnInit {
   ngOnInit(): void {
     this.getGridConfig();
   }
-
-  public onResize(event: any) {
-    this.setGridColSizeAsPerWidth();
-  }
-
+  
   public sendMsg(text: any, data: any) {
     localStorage.setItem('invoicedetail', JSON.stringify(data))
     this.router.navigateByUrl('/invoicedetail/?Id=' + data.InvoiceId);
@@ -363,22 +361,26 @@ export class InvoiceListComponent implements OnInit {
   }
 
   private autoSizeAll() {
-    let allColumnIds: any = [];
+    let allColumnIds: any[] = [];
     let gridColumnApi = this.gridApi.columnApi
-    gridColumnApi.getAllColumns().forEach(function (column: any) {
-      allColumnIds.push(column.colId);
-    });
-    gridColumnApi.autoSizeColumns(allColumnIds);
+    if (gridColumnApi) {
+      gridColumnApi.getAllColumns().forEach(function (column: any) {
+        allColumnIds.push(column.colId);
+      });
+      gridColumnApi.autoSizeColumns(allColumnIds);
+    }
   }
 
   private setGridColSizeAsPerWidth() {
     setTimeout(() => {
       this.autoSizeAll();
       let width = 0;
-      let gridColumnApi = this.gridApi.columnApi
-      gridColumnApi.getAllColumns().forEach(function (column: any) {
-        width = width + column.getActualWidth();
-      });
+      let gridColumnApi = this.gridApi.columnApi;
+      if (gridColumnApi) {
+        gridColumnApi.getAllColumns().forEach(function (column: any) {
+          width = width + column.getActualWidth();
+        });
+      }
       if (this.agGridDiv && width < this.agGridDiv.nativeElement.offsetWidth)
         this.gridApi.api.sizeColumnsToFit();
     }, 1);

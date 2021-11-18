@@ -24,7 +24,7 @@ import { CellAggridComponent } from './components/cell-aggrid/cell-aggrid.compon
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    AgGridModule.withComponents([])
+    AgGridModule.withComponents([InvoiceListComponent])
   ],
   providers: [InvoiceService ,
     { provide: HTTP_INTERCEPTORS, useClass: InterceptorInterceptor, multi: true },
