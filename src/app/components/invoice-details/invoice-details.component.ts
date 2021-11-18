@@ -121,8 +121,8 @@ export class InvoiceDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getGridConfig();
     this.getData();
+    this.getGridConfig();
     const invoiceDetails: any = localStorage.getItem('invoicedetail');
     const invoiceData = JSON.parse(invoiceDetails);
     this.invoiceNumber = invoiceData.InvoiceNumber || this.nullValueSet;
@@ -157,6 +157,7 @@ export class InvoiceDetailsComponent implements OnInit {
       //noRowsOverlayComponentFramework: NoRowOverlayComponent,
       noRowsOverlayComponentParams: { noRowsMessageFunc: () => this.rowData && this.rowData.length ? 'No matching records found for the required search' : 'No invoice details to display' },
       onModelUpdated,
+      onGridReady,
     }
 
     function onModelUpdated(params: any) {
@@ -164,6 +165,10 @@ export class InvoiceDetailsComponent implements OnInit {
         return;
       if (params.api.getDisplayedRowCount()) params.api.hideOverlay();
       else params.api.showNoRowsOverlay();
+    }
+
+    function onGridReady(params: any) {
+      vm.gridApi = params.api;
     }
   }
 
@@ -303,8 +308,6 @@ export class InvoiceDetailsComponent implements OnInit {
           .subscribe((response) => {
             this.data = response;
             this.rowData = this.data;
-            this.setGridColSizeAsPerWidth();
-            this.apiSuccessFull = true;
             let sum = 0;
             for (var i in this.data) {
               sum += parseFloat(this.data[i].TotalOld);
@@ -322,6 +325,7 @@ export class InvoiceDetailsComponent implements OnInit {
               des += parseFloat(this.data[i].Discounts);
               this.dess = des;
             }
+
             this.discount = this.dess || 0;
             this.original = this.totalOld + this.discount + this.expenses || 0;
             this.changeValue = this.change + this.discount + this.expenses || 0;
