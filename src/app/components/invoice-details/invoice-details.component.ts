@@ -282,6 +282,7 @@ export class InvoiceDetailsComponent implements OnInit {
     return date1Number - date2Number;
   }
 
+  
   private monthToComparableNumber(date: any) {
     if (date === undefined || date === null || date.length !== 10) {
       return null;
