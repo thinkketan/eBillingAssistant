@@ -87,7 +87,6 @@ export class InvoiceDetailsComponent implements OnInit {
 
   constructor(private route: ActivatedRoute, private router: Router, private invoicingService: InvoiceService) {
     this.id = this.route.snapshot.queryParams.Id;
-    this.discount = 0;
     this.expenses = 0;
     this.invoiceHeader = invoiceDetails.INVOICE_HEADER;
     this.invoiceNumbers = invoiceDetails.INVOICE_NUMBER;
@@ -295,14 +294,13 @@ export class InvoiceDetailsComponent implements OnInit {
   getData() {
     this.invoicingService.getInvoiceDataDetails(this.id)
       .subscribe((response: any) => {
-        this.calFinalValue()
+        this.calFinalValue();
         this.startDate = this.myDateParser(response[0].StartDate) || this.nullValueSet;
         this.endDate = this.myDateParser(response[0].EndDate) || this.nullValueSet;
         this.invoiceFormat = response[0].InvoiceFormat || this.nullValueSet;
         this.isFinal = response[0].IsFinal || this.nullValueSet;
         this.tags = response[0].Tags || this.nullValueSet;
         this.ruleCode = response[0].RuleCode || this.nullValueSet;
-       
       })
   }
 
@@ -311,29 +309,59 @@ export class InvoiceDetailsComponent implements OnInit {
       .subscribe((response) => {
         this.data = response;
         this.rowData = this.data;
-        let sum = 0;
-        for (var i in this.data) {
-          sum += parseFloat(this.data[i].TotalOld);
-        }
-        this.totalOld = sum || 0;
 
-        let old = 0;
-        for (var i in this.data) {
-          old += parseFloat(this.data[i].Total);
-        }
-        this.total = old || 0;
-        this.change = this.totalOld - this.total || 0;
-        let des = 0;
-        for (var i in this.data) {
-          des += parseFloat(this.data[i].Discounts);
-          this.dess = des;
-        }
-        this.discount = this.dess || 0;
-        this.original = this.totalOld + this.discount + this.expenses || 0;
-        this.changeValue = this.change + this.discount + this.expenses || 0;
-        this.final = this.total + this.discount + this.expenses || 0;
-        console.log('find check data==>', this.data);
-        console.log('find check data22222==>', this.changeValue);
+        this.totalOld = this.rowData.map((e: { TotalOld: any; }) => Number(e.TotalOld)).reduce((a: any, b: any) => a + b, 0);
+        console.log('totalold===>', this.totalOld);
+
+        this.total = this.rowData.map((e: { Total: any; }) => Number(e.Total)).reduce((a: any, b: any) => a + b, 0);
+        console.log('total==>', this.total);
+
+        this.change = this.totalOld - this.total;
+        console.log('changess===>', this.change);
+
+        this.discount = this.rowData.map((e: { Discounts: any; }) => Number(e.Discounts)).reduce((a: any, b: any) => a + b, 0);
+        console.log('discount==>', this.discount);
+
+        this.original = this.totalOld + this.discount + this.expenses;
+        this.changeValue = this.change + this.discount + this.expenses;
+        this.final = this.total + this.discount + this.expenses;
+        console.log('original==>', this.original);
+        console.log('changeValue==>', this.changeValue);
+        console.log('final==>', this.final);
+
+
+        // let sum = 0;
+        // for (var i in this.rowData) {
+        //   sum += parseFloat(this.rowData[i].TotalOld);
+        // }
+        // this.totalOld = sum || 0;
+        // console.log('total==>',  this.totalOld);
+
+
+        // let old = 0;
+        // for (var i in this.rowData) {
+        //   old += parseFloat(this.rowData[i].Total);
+        // }
+        // this.total = old || 0;
+        // console.log('oldtotal==>',  old);
+
+
+        // this.change = this.totalOld - this.total || 0;
+
+
+        // let des = 0;
+        // for (var i in this.rowData) {
+        //   des += parseFloat(this.rowData[i].Discounts);
+        //   this.dess = des;
+        // }
+        // this.discount = this.dess || 0;
+
+
+        // this.original = this.totalOld + this.discount + this.expenses || 0;
+        // this.changeValue = this.change + this.discount + this.expenses || 0;
+        // this.final = this.total + this.discount + this.expenses || 0;
+
+
       }, () => {
         subscription.unsubscribe();
       });
