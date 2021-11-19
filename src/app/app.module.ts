@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { InvoiceService } from './services/invoice.service' ;
+import { InvoiceService } from './services/invoice.service';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -20,13 +20,13 @@ import { CellAggridComponent } from './components/cell-aggrid/cell-aggrid.compon
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule ,
+    AppRoutingModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    AgGridModule.withComponents([InvoiceListComponent])
+    AgGridModule.withComponents([])
   ],
-  providers: [InvoiceService ,
+  providers: [InvoiceService,
     { provide: HTTP_INTERCEPTORS, useClass: InterceptorInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]
