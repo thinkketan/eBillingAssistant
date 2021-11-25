@@ -5,6 +5,8 @@ import { MenuModule } from '@ag-grid-enterprise/menu';
 import { InvoiceService } from '../../services/invoice.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { invoiceDetails, casecading } from '../../shared/constant-file';
+import Swal from 'sweetalert2';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-invoice-details',
@@ -13,6 +15,7 @@ import { invoiceDetails, casecading } from '../../shared/constant-file';
 })
 export class InvoiceDetailsComponent implements OnInit {
   @ViewChild('agGridParentDiv', { read: ElementRef }) public agGridDiv: any;
+  gridColumnApi: any;
   @HostListener('window:resize', ['$event'])
   public onResize(event: any) {
     this.setGridColSizeAsPerWidth();
@@ -84,6 +87,10 @@ export class InvoiceDetailsComponent implements OnInit {
   public home: any;
   public headerInvoicelist: any;
   public headerInvoiceDetails: any;
+  public isSaveClicked: any;
+  public isCancelClicked: any;
+  private editingRowIndex: any;
+  pipe = new DatePipe('en-US');
 
   constructor(private route: ActivatedRoute, private router: Router, private invoicingService: InvoiceService) {
     this.id = this.route.snapshot.queryParams.Id;
@@ -154,7 +161,7 @@ export class InvoiceDetailsComponent implements OnInit {
       //noRowsOverlayComponentFramework: NoRowOverlayComponent,
       noRowsOverlayComponentParams: { noRowsMessageFunc: () => this.rowData && this.rowData.length ? 'No matching records found for the required search' : 'No invoice details to display' },
       onModelUpdated,
-      onGridReady,
+
     }
 
     function onModelUpdated(params: any) {
@@ -164,13 +171,74 @@ export class InvoiceDetailsComponent implements OnInit {
       else params.api.showNoRowsOverlay();
     }
 
-    function onGridReady(params: any) {
-      vm.gridApi = params.api;
-    }
+  }
+  onGridReady(params: any) {
+    this.gridApi = params.api;
+    this.gridColumnApi = params.columnApi;
+    params.api.sizeColumnsToFit();
   }
 
   private setFilter(event: any) {
     this.filter = ''
+  }
+
+  // onCellValueChanged($event: any) {
+  //   console.log($event);
+  //   $event.api.startEditingCell({
+  //     rowIndex: $event.rowIndex,
+  //     colKey: $event.column.colId
+  //   });
+  //   this.editingRowIndex = $event.rowIndex;
+  //   console.log('=1111111==>', $event.api);
+  // }
+
+  onCellClicked($event: any) {
+    // check whether the current row is already opened in edit or not
+    if (this.editingRowIndex != $event.rowIndex) {
+      console.log($event);
+      $event.api.startEditingCell({
+        rowIndex: $event.rowIndex,
+        colKey: $event.column.colId
+      });
+      this.editingRowIndex = $event.rowIndex;
+    }
+  }
+  
+  updateTable() {
+    this.gridApi.stopEditing();
+    for (let i = 0; i < this.data.length; i++) {
+      if (this.data[i].AgreedRate == null) {
+        this.data[i].AgreedRate = ''
+      }
+      if (this.data[i].DiscountCreditCategory == null && this.data[i].DiscountCreditCategory == '' && this.data[i].DiscountCreditCategory == undefined) {
+        this.data[i].DiscountCreditCategory = null;
+      }
+    }
+    const subscription = this.invoicingService.invoiceLineitemsUpdate(JSON.stringify(this.data))
+      .subscribe((response) => {
+
+
+      }, (error) => {
+        console.log('error==>', error.error.text);
+        if (error.error.text == 'Success') {
+          Swal.fire(
+            ' ',
+            'modified successfully!',
+            'success'
+          )
+          this.calFinalValue();
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: ' ',
+            text: 'error!',
+          })
+        }
+      }, () => {
+      }).add(() => {
+        subscription.unsubscribe();
+      })
+
   }
 
   private getColumnDefinition() {
@@ -250,12 +318,14 @@ export class InvoiceDetailsComponent implements OnInit {
       {
         headerName: 'Description',
         field: 'Description',
-        minWidth: 400
+        minWidth: 400,
+        cellEditor: 'agLargeTextCellEditor',
       },
       {
         headerName: 'ML Preparation Note',
-        field: ' ',
-        minWidth: 300
+        field: 'MLPreparationNotes',
+        minWidth: 300,
+        cellEditor: 'agLargeTextCellEditor',
       },
     ]
   }
@@ -264,21 +334,22 @@ export class InvoiceDetailsComponent implements OnInit {
     return '<span class="rag-element">' + params.value + '</span>';
   }
 
-  private dateComparator(date1: any, date2: any) {
-    var date1Number = this.monthToComparableNumber(date1);
-    var date2Number = this.monthToComparableNumber(date2);
-    if (date1Number === null && date2Number === null) {
+  dateComparator(date1: any, date2: any) {
+    var date1Number = date1 && new Date(date1).getTime();
+    var date2Number = date2 && new Date(date2).getTime();
+
+    if (date1Number == null && date2Number == null) {
       return 0;
     }
-    if (date1Number === null) {
+
+    if (date1Number == null) {
       return -1;
-    }
-    if (date2Number === null) {
+    } else if (date2Number == null) {
       return 1;
     }
+
     return date1Number - date2Number;
   }
-
 
   private monthToComparableNumber(date: any) {
     if (date === undefined || date === null || date.length !== 10) {
@@ -308,60 +379,21 @@ export class InvoiceDetailsComponent implements OnInit {
     const subscription = this.invoicingService.getInvoiceDetails(this.id)
       .subscribe((response) => {
         this.data = response;
+        for (let i = 0; i < this.data.length; i++) {
+          let date = this.data[i].Date;
+          const now = this.myDateParser(date);
+          const Date = this.pipe.transform(now, 'MM/dd/y');
+          this.data[i]["Date"] = Date;
+        }
         this.rowData = this.data;
-
         this.totalOld = this.rowData.map((e: { TotalOld: any; }) => Number(e.TotalOld)).reduce((a: any, b: any) => a + b, 0);
-        console.log('totalold===>', this.totalOld);
-
         this.total = this.rowData.map((e: { Total: any; }) => Number(e.Total)).reduce((a: any, b: any) => a + b, 0);
-        console.log('total==>', this.total);
-
         this.change = this.totalOld - this.total;
-        console.log('changess===>', this.change);
-
         this.discount = this.rowData.map((e: { Discounts: any; }) => Number(e.Discounts)).reduce((a: any, b: any) => a + b, 0);
-        console.log('discount==>', this.discount);
 
         this.original = this.totalOld + this.discount + this.expenses;
         this.changeValue = this.change + this.discount + this.expenses;
         this.final = this.total + this.discount + this.expenses;
-        console.log('original==>', this.original);
-        console.log('changeValue==>', this.changeValue);
-        console.log('final==>', this.final);
-
-
-        // let sum = 0;
-        // for (var i in this.rowData) {
-        //   sum += parseFloat(this.rowData[i].TotalOld);
-        // }
-        // this.totalOld = sum || 0;
-        // console.log('total==>',  this.totalOld);
-
-
-        // let old = 0;
-        // for (var i in this.rowData) {
-        //   old += parseFloat(this.rowData[i].Total);
-        // }
-        // this.total = old || 0;
-        // console.log('oldtotal==>',  old);
-
-
-        // this.change = this.totalOld - this.total || 0;
-
-
-        // let des = 0;
-        // for (var i in this.rowData) {
-        //   des += parseFloat(this.rowData[i].Discounts);
-        //   this.dess = des;
-        // }
-        // this.discount = this.dess || 0;
-
-
-        // this.original = this.totalOld + this.discount + this.expenses || 0;
-        // this.changeValue = this.change + this.discount + this.expenses || 0;
-        // this.final = this.total + this.discount + this.expenses || 0;
-
-
       }, () => {
         subscription.unsubscribe();
       });

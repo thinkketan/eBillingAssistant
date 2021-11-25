@@ -37,4 +37,8 @@ export class InvoiceService {
     return this.http.get('https://frontlineebillingassistantapi.azurewebsites.net/api/invoice/details', { params: { Id: InvoiceID } });
   }
 
+  invoiceLineitemsUpdate(objReqBody: any) {
+    return this.http.post('https://frontlineebillingassistantapi.azurewebsites.net/api/invoicelineitems/update', objReqBody)
+  }
+
 }

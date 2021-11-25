@@ -8,6 +8,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ServerSideRowModelModule, ColumnsToolPanelModule } from '@ag-grid-enterprise/all-modules';
 import { InvoiceService } from '../../services/invoice.service';
 import { CellAggridComponent } from '../cell-aggrid/cell-aggrid.component';
+import * as _moment from 'moment';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-invoice-list',
@@ -38,7 +40,7 @@ export class InvoiceListComponent implements OnInit {
   apiSuccessFull: any;
   gridColumnApi: any;
   filterData: any;
-  
+
 
   constructor(private router: Router, private invoicingService: InvoiceService, private formBuilder: FormBuilder,) {
     this.rowModelType = 'serverSide';
@@ -49,7 +51,7 @@ export class InvoiceListComponent implements OnInit {
   ngOnInit(): void {
     this.getGridConfig();
   }
-  
+
   public sendMsg(text: any, data: any) {
     localStorage.setItem('invoicedetail', JSON.stringify(data))
     this.router.navigateByUrl('/invoicedetail/?Id=' + data.InvoiceId);
@@ -307,12 +309,19 @@ export class InvoiceListComponent implements OnInit {
         field: 'UploadedDate',
         filter: 'agDateColumnFilter',
         comparator: this.dateComparator,
+        cellRenderer: (UploadedDate: any) => {
+          return moment(UploadedDate.createdAt).format('MM/DD/YYYY')
+        }
       },
       {
         headerName: 'Invoice Date',
         field: 'InvoiceDate',
         filter: 'agDateColumnFilter',
         comparator: this.dateComparator,
+        cellRenderer: (InvoiceDate: any) => {
+          return moment(InvoiceDate.createdAt).format('MM/DD/YYYY')
+        }
+
       },
       {
         headerName: 'Client',
@@ -348,6 +357,9 @@ export class InvoiceListComponent implements OnInit {
         field: 'AppealDeadlineDate',
         filter: 'agDateColumnFilter',
         comparator: this.dateComparator,
+        cellRenderer: (AppealDeadlineDate: any) => {
+          return moment(AppealDeadlineDate.createdAt).format('MM/DD/YYYY')
+        }
       },
       {
         headerName: 'Preparer',
