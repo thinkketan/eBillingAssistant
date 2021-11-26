@@ -166,10 +166,11 @@
         </div>
     </div>
     <div class="saveButtons">
-        <button type="button" class="btn btn-primary btn-sm" style="background-color: #2D76BC;"
-            (click)="updateTable()">Save 
+        <button type="button" class="btn btn-primary btn-sm" style="background-color: #2D76BC;" (click)="updateTable()"
+            [disabled]="condition">Save
             <!-- <i class="fas fa-save"></i> -->
-            <i class="fa fa-save" style="margin-left: 5px;"></i>
-         </button>
+            <!-- <i class=" fa-save" style="margin-left: 5px;"></i> -->
+            <fa-icon [icon]="faSave" style="margin-left: 5px;"></fa-icon>
+        </button>
     </div>
 </div>

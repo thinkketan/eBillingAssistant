@@ -7,6 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { invoiceDetails, casecading } from '../../shared/constant-file';
 import Swal from 'sweetalert2';
 import { DatePipe } from '@angular/common';
+import { faSave } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-invoice-details',
@@ -90,7 +91,9 @@ export class InvoiceDetailsComponent implements OnInit {
   public isSaveClicked: any;
   public isCancelClicked: any;
   private editingRowIndex: any;
+  public condition: any;
   pipe = new DatePipe('en-US');
+  faSave = faSave;
 
   constructor(private route: ActivatedRoute, private router: Router, private invoicingService: InvoiceService) {
     this.id = this.route.snapshot.queryParams.Id;
@@ -125,6 +128,7 @@ export class InvoiceDetailsComponent implements OnInit {
     this.home = casecading.HOME;
     this.headerInvoicelist = casecading.INVOICE_LIST;
     this.headerInvoiceDetails = casecading.INVOICE_DETAILS;
+    this.condition = true;
   }
 
   ngOnInit(): void {
@@ -193,6 +197,7 @@ export class InvoiceDetailsComponent implements OnInit {
   // }
 
   onCellClicked($event: any) {
+    this.condition = false;
     // check whether the current row is already opened in edit or not
     if (this.editingRowIndex != $event.rowIndex) {
       console.log($event);
@@ -203,9 +208,13 @@ export class InvoiceDetailsComponent implements OnInit {
       this.editingRowIndex = $event.rowIndex;
     }
   }
-  
+
   updateTable() {
     this.gridApi.stopEditing();
+    console.log('yes', this.editingRowIndex);
+    if (this.editingRowIndex) {
+      console.log('yes');
+    }
     for (let i = 0; i < this.data.length; i++) {
       if (this.data[i].AgreedRate == null) {
         this.data[i].AgreedRate = ''
@@ -227,12 +236,14 @@ export class InvoiceDetailsComponent implements OnInit {
             'success'
           )
           this.calFinalValue();
+          this.condition = true;
         } else {
           Swal.fire({
             icon: 'error',
             title: ' ',
             text: 'error!',
           })
+          this.condition = true;
         }
       }, () => {
       }).add(() => {

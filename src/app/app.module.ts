@@ -10,6 +10,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { InterceptorInterceptor } from '../app/shared/interceptor.interceptor';
 import { CellAggridComponent } from './components/cell-aggrid/cell-aggrid.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { CellAggridComponent } from './components/cell-aggrid/cell-aggrid.compon
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+    FontAwesomeModule,
     AgGridModule.withComponents([])
   ],
   providers: [InvoiceService,
