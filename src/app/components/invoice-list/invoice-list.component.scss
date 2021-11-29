@@ -1,10 +1,9 @@
 .body {
     height: 90vh;
     margin: 0;
-   // background-image:url("../../../assets/PageBackground.jpg");
-  }
-  
-  .headername {
+}
+
+.headername {
       width: 106px;
       height: 22px;
       font-family: Tahoma;
@@ -14,65 +13,75 @@
       line-height: 22px;
       color: #333333;
       margin-left: 5px;
-  }
-  @media (min-width: 576px) {  
+}
+
+@media (min-width: 576px) {  
     .card {
         height: 680px;
     }
-  }
+}
 
-
-// Medium devices (tablets, 768px and up)
-@media (min-width: 768px) {   .card {
+@media (min-width: 768px) {  
+     .card {
     height: 680px;
-} }
+         }
+}
 
-// Large devices (desktops, 992px and up)
-@media (min-width: 992px) {   .card {
+@media (min-width: 992px) {  
+     .card {
     height: 680px;
-} }
+  } 
+}
 
-// X-Large devices (large desktops, 1200px and up)
-@media (min-width: 1200px) {   .card {
+@media (min-width: 1200px) { 
+      .card {
     height: 680px;
-} }
+   } 
+}
 
-// XX-Large devices (larger desktops, 1400px and up)
-@media (min-width: 1400px) {   .card {
+@media (min-width: 1400px) {  
+     .card {
     height: 680px;
-} }
+  } 
+}
 
-  .card {
-      top: 25px;
+.card {
+      top: 34px;
       border: 1px solid #DDDDDD;
       box-sizing: border-box;
       border-radius: 5px;
       margin: 0px 20px;
-  }
+}
   
-  .ag-paging-panel {
+.ag-paging-panel {
       align-items: center;
       display: flex;
       justify-content: flex-end;
       background-color: #E5E5E5 ;
-  }
+}
   
-  .grid {
+.grid {
       height: 100%;width:100%;
-  }
+}
   
-  ::-webkit-input-placeholder {
+::-webkit-input-placeholder {
     color: black;
     font-weight: 400;
-  }
+}
   
-  .breadcrumb {
+.breadcrumb {
     position: absolute;
     background-color:transparent;
     margin-left: 22px;
-   }
+}
   
-   a {
+a {
     text-decoration:none ;
-  }
+}
+
+.cardBorder {
+    margin: 0px 0px; 
+     border-top-left-radius: 5px;
+    border-top-right-radius: 5px; 
+}
   

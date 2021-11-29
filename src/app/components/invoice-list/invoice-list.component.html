@@ -1,10 +1,9 @@
 <div class="body mt-1">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item active" aria-current="page"> Invoice List</li>
+        <li class="breadcrumb-item active" aria-current="page">{{invoiceList}}</li>
     </ol>
-    <div class="card" style="top: 34px;">
-        <div class="row" style="margin: 0px 0px;  border-top-left-radius: 5px;
-        border-top-right-radius: 5px; ">
+    <div class="card">
+        <div class="row cardBorder">
             <div class="col-12">
                 <div class="headername my-2"> {{invoiceList}} </div>
             </div>
@@ -12,10 +11,10 @@
         <div class="row">
             <div class="col-12">
                 <div class="customHeight">
-                    <ag-grid-angular [gridOptions]="agGridOption" [modules]='modules' 
-                        ag-grid="gridOptions" [sortingOrder]="sortingOrder" [defaultColDef]="defaultColDef"
-                        [rowModelType]="rowModelType" [serverSideStoreType]="serverSideStoreType"
-                        (gridReady)="onGridReady($event)" class="agGridHorizontalScroll ag-theme-alpine grid">
+                    <ag-grid-angular [gridOptions]="agGridOption" [modules]='modules' ag-grid="gridOptions"
+                        [sortingOrder]="sortingOrder" [defaultColDef]="defaultColDef" [rowModelType]="rowModelType"
+                        [serverSideStoreType]="serverSideStoreType" (gridReady)="onGridReady($event)"
+                        class="agGridHorizontalScroll ag-theme-alpine grid">
                     </ag-grid-angular>
                 </div>
             </div>
