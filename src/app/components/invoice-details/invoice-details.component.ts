@@ -109,7 +109,7 @@ export class InvoiceDetailsComponent implements OnInit {
     this.id = this.route.snapshot.queryParams.Id;
     this.zero = invoiceList.ZERO;
     this.one = invoiceList.ONE;
-    this.expenses = invoiceList.ZERO;
+    this.expenses = 0;
     this.saveButton = invoiceDetails.SAVE_BUTTTON;
     this.invoiceName = invoiceList.INVOICE_LIST;
     this.inInvoice = invoiceDetails.IN_INVOICE;
@@ -146,7 +146,7 @@ export class InvoiceDetailsComponent implements OnInit {
     this.headerInvoiceDetails = casecading.INVOICE_DETAILS;
     this.condition = true;
     this.allRowWidth = invoiceDetails.ALL_ROW_WIDTH;
-    this.data = invoiceDetails.DATE;
+    this.date = invoiceDetails.DATE;
     this.description = invoiceDetails.DESCRIPTION;
   }
 
@@ -286,6 +286,7 @@ export class InvoiceDetailsComponent implements OnInit {
       {
         headerName: "Total",
         field: 'Total',
+        editable: false,
       },
       {
         headerName: "Tags",
@@ -296,7 +297,7 @@ export class InvoiceDetailsComponent implements OnInit {
         field: 'Date',
         filter: 'agDateColumnFilter',
         comparator: this.dateComparator,
-        minWidth: this.data
+        minWidth: this.date
       },
       {
         headerName: "Task",
@@ -374,8 +375,13 @@ export class InvoiceDetailsComponent implements OnInit {
           const now = this.myDateParser(date);
           const Date = this.pipe.transform(now, 'MM/dd/y');
           this.data[i]["Date"] = Date;
+          let rate = this.data[i].Rate;
+          let units = this.data[i].Units;
+          let rateUnitsTotals = Number(rate * units);
+          this.data[i]["Total"] = JSON.stringify(rateUnitsTotals);
         }
         this.rowData = this.data;
+
         this.totalOld = this.rowData.map((e: { TotalOld: any; }) => Number(e.TotalOld)).reduce((a: any, b: any) => a + b, 0);
         this.total = this.rowData.map((e: { Total: any; }) => Number(e.Total)).reduce((a: any, b: any) => a + b, 0);
         this.change = this.totalOld - this.total;
@@ -421,7 +427,23 @@ export class InvoiceDetailsComponent implements OnInit {
   }
 
   onBack() {
-    this.router.navigate(['/invoices']);
+    if (this.condition == false) {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You have unsaved changes. Do you still want to continue?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: ' Yes '
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.router.navigate(['/invoices']);
+        }
+      })
+    } else {
+      this.router.navigate(['/invoices']);
+    }
   }
 
 }

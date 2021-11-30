@@ -99,7 +99,7 @@ export class InvoiceListComponent implements OnInit {
   private getGridConfig() {
     let vm = this
     this.agGridOption = {
-      defaultColDef: { flex: this.one, minWidth: this.allRowWidht, sortable: true, filter: 'agTextColumnFilter', resizable: true, sortingOrder: ["asc", "desc"], menuTabs: [], floatingFilter: true, editable: true, },
+      defaultColDef: { flex: this.one, minWidth: this.allRowWidht, sortable: true, filter: 'agTextColumnFilter', resizable: true, sortingOrder: ["asc", "desc"], menuTabs: [], floatingFilter: true },
       rowSelection: 'multiple',
       enableMultiRowDragging: true,
       suppressRowClickSelection: true,
@@ -314,6 +314,9 @@ export class InvoiceListComponent implements OnInit {
         maxWidth: this.invoiceWidth,
         filter: 'agNumberColumnFilter',
         cellRendererFramework: CellAggridComponent,
+        pinned: 'left',
+        lockPinned: true,
+        cellClass: 'lock-pinned',
       },
       {
         headerName: 'Uploaded Date',
