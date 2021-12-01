@@ -315,8 +315,6 @@ export class InvoiceListComponent implements OnInit {
         filter: 'agNumberColumnFilter',
         cellRendererFramework: CellAggridComponent,
         pinned: 'left',
-        lockPinned: true,
-        cellClass: 'lock-pinned',
       },
       {
         headerName: 'Uploaded Date',

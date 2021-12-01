@@ -204,7 +204,6 @@ export class InvoiceDetailsComponent implements OnInit {
   }
 
   onCellClicked($event: any) {
-    this.condition = false;
     if (this.editingRowIndex != $event.rowIndex) {
       console.log($event);
       $event.api.startEditingCell({
@@ -213,6 +212,10 @@ export class InvoiceDetailsComponent implements OnInit {
       });
       this.editingRowIndex = $event.rowIndex;
     }
+  }
+
+  onCellValueChanged(params: any) {
+    this.condition = false;
   }
 
   updateTable() {
@@ -378,7 +381,7 @@ export class InvoiceDetailsComponent implements OnInit {
           let rate = this.data[i].Rate;
           let units = this.data[i].Units;
           let rateUnitsTotals = Number(rate * units);
-          this.data[i]["Total"] = JSON.stringify(rateUnitsTotals);
+          this.data[i]["Total"] = parseFloat(JSON.stringify(rateUnitsTotals)).toFixed(2);
         }
         this.rowData = this.data;
 
@@ -435,7 +438,8 @@ export class InvoiceDetailsComponent implements OnInit {
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: ' Yes '
+        confirmButtonText: ' Yes ',
+        cancelButtonText: ' No',
       }).then((result) => {
         if (result.isConfirmed) {
           this.router.navigate(['/invoices']);

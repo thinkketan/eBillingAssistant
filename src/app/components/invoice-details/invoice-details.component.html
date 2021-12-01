@@ -158,6 +158,7 @@
                 <div class="customHeights">
                     <ag-grid-angular [gridOptions]="agGridOption" [modules]='modules' [rowData]="rowData"
                         (cellClicked)="onCellClicked($event)" (gridReady)="onGridReady($event)" [singleClickEdit]="true"
+                        (cellValueChanged)="onCellValueChanged($event)"
                         class="agGridHorizontalScroll ag-theme-alpine grid">
                     </ag-grid-angular>
                 </div>
@@ -165,9 +166,9 @@
         </div>
     </div>
     <div class="saveButtons">
-        <button type="button save" class="btn btn-primary btn-sm"  (click)="updateTable()"
+        <button type="button save" class="btn btn-primary btn-sm" (click)="updateTable()"
             [disabled]="condition">{{saveButton}}
-            <i class="fas fa-save ml-1"></i>
+            <fa-icon [icon]="faSave" class="ml-1"></fa-icon>
         </button>
     </div>
 </div>
