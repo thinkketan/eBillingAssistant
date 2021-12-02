@@ -384,7 +384,6 @@ export class InvoiceDetailsComponent implements OnInit {
           this.data[i]["Total"] = parseFloat(JSON.stringify(rateUnitsTotals)).toFixed(2);
         }
         this.rowData = this.data;
-
         this.totalOld = this.rowData.map((e: { TotalOld: any; }) => Number(e.TotalOld)).reduce((a: any, b: any) => a + b, 0);
         this.total = this.rowData.map((e: { Total: any; }) => Number(e.Total)).reduce((a: any, b: any) => a + b, 0);
         this.change = this.totalOld - this.total;
