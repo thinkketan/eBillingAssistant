@@ -384,10 +384,10 @@ export class InvoiceDetailsComponent implements OnInit {
           this.data[i]["Total"] = parseFloat(JSON.stringify(rateUnitsTotals)).toFixed(2);
         }
         this.rowData = this.data;
-        this.totalOld = this.rowData.map((e: { TotalOld: any; }) => Number(e.TotalOld)).reduce((a: any, b: any) => a + b, 0);
-        this.total = this.rowData.map((e: { Total: any; }) => Number(e.Total)).reduce((a: any, b: any) => a + b, 0);
+        this.totalOld = this.rowData.map((e: { TotalOld: any; }) => Number(e.TotalOld)).reduce((a: any, b: any) => a + b, this.zero);
+        this.total = this.rowData.map((e: { Total: any; }) => Number(e.Total)).reduce((a: any, b: any) => a + b, this.zero);
         this.change = this.totalOld - this.total;
-        this.discount = this.rowData.map((e: { Discounts: any; }) => Number(e.Discounts)).reduce((a: any, b: any) => a + b, 0);
+        this.discount = this.rowData.map((e: { Discounts: any; }) => Number(e.Discounts)).reduce((a: any, b: any) => a + b, this.zero);
         this.original = this.totalOld + this.discount + this.expenses;
         this.changeValue = this.change + this.discount + this.expenses;
         this.final = this.total + this.discount + this.expenses;
@@ -435,7 +435,7 @@ export class InvoiceDetailsComponent implements OnInit {
         text: "You have unsaved changes. Do you still want to continue?",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#3085d6',
+        confirmButtonColor: '#008000',
         cancelButtonColor: '#d33',
         confirmButtonText: ' Yes ',
         cancelButtonText: ' No',

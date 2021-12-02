@@ -4,8 +4,8 @@ export const invoiceList = {
     INVOICE_LIST: 'Invoice List',
     USER_NAME: 'rahulshrivastava',
     password: 'pass@123',
-    ONE: '1',
-    ZERO: '0',
+    ONE: 1,
+    ZERO: 0,
     ROWCOUNT: '100',
     ALL_ROW_WIDTH: '304',
     INVOICE_WIDTH: '200'

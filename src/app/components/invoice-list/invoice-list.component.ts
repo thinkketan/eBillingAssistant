@@ -59,6 +59,7 @@ export class InvoiceListComponent implements OnInit {
     this.rowModelType = 'serverSide';
     this.serverSideStoreType = 'partial';
     this.invoiceList = invoiceList.INVOICE_LIST;
+
   }
 
   ngOnInit(): void {
