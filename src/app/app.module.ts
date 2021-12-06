@@ -11,6 +11,8 @@ import { AgGridModule } from '@ag-grid-community/angular';
 import { InterceptorInterceptor } from '../app/shared/interceptor.interceptor';
 import { CellAggridComponent } from './components/cell-aggrid/cell-aggrid.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,10 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     FormsModule,
     ReactiveFormsModule,
     FontAwesomeModule,
-    AgGridModule.withComponents([])
+    MatProgressSpinnerModule,
+    AgGridModule.withComponents([]),
+
+    BrowserAnimationsModule
   ],
   providers: [InvoiceService,
     { provide: HTTP_INTERCEPTORS, useClass: InterceptorInterceptor, multi: true },

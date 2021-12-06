@@ -48,7 +48,7 @@ export class InvoiceListComponent implements OnInit {
   gridColumnApi: any;
   filterData: any;
 
-  constructor(private router: Router, private invoicingService: InvoiceService, private formBuilder: FormBuilder,) {
+  constructor(private router: Router, private invoicingService: InvoiceService, private formBuilder: FormBuilder) {
     this.userName = invoiceList.USER_NAME;
     this.password = invoiceList.password;
     this.one = invoiceList.ONE;
@@ -59,7 +59,6 @@ export class InvoiceListComponent implements OnInit {
     this.rowModelType = 'serverSide';
     this.serverSideStoreType = 'partial';
     this.invoiceList = invoiceList.INVOICE_LIST;
-
   }
 
   ngOnInit(): void {

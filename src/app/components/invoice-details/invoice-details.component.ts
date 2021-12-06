@@ -8,6 +8,7 @@ import { invoiceDetails, casecading, invoiceList } from '../../shared/constant-f
 import Swal from 'sweetalert2';
 import { DatePipe } from '@angular/common';
 import { faSave } from '@fortawesome/free-solid-svg-icons';
+import { LoaderService } from '../../services/loader.service';
 
 @Component({
   selector: 'app-invoice-details',
@@ -104,8 +105,10 @@ export class InvoiceDetailsComponent implements OnInit {
   public description: any;
   pipe = new DatePipe('en-US');
   faSave = faSave;
+  loading$ = this.loader.loading$;
 
-  constructor(private route: ActivatedRoute, private router: Router, private invoicingService: InvoiceService) {
+  constructor(private route: ActivatedRoute, private router: Router, private invoicingService: InvoiceService,
+    public loader: LoaderService) {
     this.id = this.route.snapshot.queryParams.Id;
     this.zero = invoiceList.ZERO;
     this.one = invoiceList.ONE;
@@ -169,6 +172,7 @@ export class InvoiceDetailsComponent implements OnInit {
     this.agGridOption = {
       defaultColDef: { flex: this.one, minWidth: this.allRowWidth, sortable: true, filter: 'agTextColumnFilter', resizable: true, sortingOrder: ["asc", "desc"], menuTabs: [], floatingFilter: true, editable: true, },
       rowSelection: 'multiple',
+      stopEditingWhenCellsLoseFocus: true,
       suppressRowClickSelection: true,
       rowDragManaged: true,
       suppressMoveWhenRowDragging: true,
@@ -214,12 +218,13 @@ export class InvoiceDetailsComponent implements OnInit {
     }
   }
 
-  onCellValueChanged(params: any) {
+  onCellKeyPress(e: any) {
     this.condition = false;
   }
 
   updateTable() {
     this.gridApi.stopEditing();
+    this.loader.show();
     for (let i = 0; i < this.data.length; i++) {
       if (this.data[i].AgreedRate == null) {
         this.data[i].AgreedRate = ''
@@ -230,17 +235,19 @@ export class InvoiceDetailsComponent implements OnInit {
     }
     const subscription = this.invoicingService.invoiceLineitemsUpdate(JSON.stringify(this.data))
       .subscribe((response) => {
-
+        this.loader.hide();
       }, (error) => {
         if (error.error.text == 'Success') {
           Swal.fire(
             ' ',
-            'modified successfully!',
+            'Modified Successfully!',
             'success'
           )
+          this.loader.hide();
           this.calFinalValue();
           this.condition = true;
         } else {
+          this.loader.hide();
           Swal.fire({
             icon: 'error',
             title: ' ',
@@ -319,12 +326,18 @@ export class InvoiceDetailsComponent implements OnInit {
         field: 'Description',
         minWidth: this.description,
         cellEditor: 'agLargeTextCellEditor',
+        cellEditorParams: {
+          onKeyDown: (event: any) => this.condition = false
+        }
       },
       {
         headerName: 'ML Preparation Note',
         field: 'MLPreparationNotes',
         minWidth: this.description,
         cellEditor: 'agLargeTextCellEditor',
+        cellEditorParams: {
+          onKeyDown: (event: any) => this.condition = false
+        }
       },
     ]
   }

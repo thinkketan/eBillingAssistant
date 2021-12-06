@@ -7,24 +7,24 @@
         <div class="col-md-2">
             <div class="card table1 invoiceDetail allcart">
                 <div class="header">
-                    <h6> {{invoiceHeader}} </h6>
+                    <h4 class="cardHeaderName"> {{invoiceHeader}} </h4>
                 </div>
-                <div class="row  mt-2 mx-1">
+                <div class="row mt-2 mx-1">
                     <div class="col-md-6">{{invoiceNumbers}}
                     </div>
                     <div class="col-md-6"> {{invoiceNumber}}</div>
                 </div>
-                <div class="row  mx-1 mt-1">
+                <div class="row mx-1 mt-1">
                     <div class="col-md-6">{{invoiceDates}}
                     </div>
                     <div class="col-md-6">{{invoiceDate | date : "dd/MM/y" }}</div>
                 </div>
-                <div class="row  mx-1 mt-1">
+                <div class="row mx-1 mt-1">
                     <div class="col-md-6 ">{{startDates}}
                     </div>
                     <div class="col-md-6"> {{startDate | date : "dd/MM/y" }} </div>
                 </div>
-                <div class="row  mx-1 mt-1">
+                <div class="row mx-1 mt-1">
                     <div class="col-md-6 ">{{endDates }}
                     </div>
                     <div class="col-md-6"> {{endDate | date : "dd/MM/y" }} </div>
@@ -39,7 +39,7 @@
         <div class="col-md-3">
             <div class="card table1 firmDetails allcart">
                 <div class="header">
-                    <h6>{{firmHeader}} </h6>
+                    <h4 class="cardHeaderName"> {{firmHeader}} </h4>
                 </div>
                 <div class="row  mt-1 mx-1">
                     <div class="col-md-6">{{this.firmMatterId1}} <br /> {{ this.inMatter}}
@@ -66,7 +66,7 @@
         <div class="col-md-4">
             <div class="card text matterDetails allcart">
                 <div class="header">
-                    <h6> {{matterHeader}} </h6>
+                    <h4 class="cardHeaderName"> {{matterHeader}}</h4>
                 </div>
                 <div class="row mx-1">
                     <div class="col-md-4">{{this.matterName1}} <br /> {{this.inMatter}}</div>
@@ -158,14 +158,13 @@
                 <div class="customHeights">
                     <ag-grid-angular [gridOptions]="agGridOption" [modules]='modules' [rowData]="rowData"
                         (cellClicked)="onCellClicked($event)" (gridReady)="onGridReady($event)" [singleClickEdit]="true"
-                        (cellValueChanged)="onCellValueChanged($event)"
-                        class="agGridHorizontalScroll ag-theme-alpine grid">
+                        (cellKeyPress)="onCellKeyPress($event)" class="agGridHorizontalScroll ag-theme-alpine grid">
                     </ag-grid-angular>
                 </div>
             </div>
         </div>
     </div>
-    
+    <mat-progress-spinner [mode]="'indeterminate'" *ngIf="loading$ | async" color="accent"></mat-progress-spinner>
     <div class="saveButtons">
         <button type="button save" class="btn btn-primary btn-sm" (click)="updateTable()"
             [disabled]="condition">{{saveButton}}

@@ -116,6 +116,22 @@
     background-color: #2D76BC;
 }
 
+mat-progress-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+}
+
+:host ::ng-deep .mat-progress-spinner circle, .mat-spinner circle {   
+    stroke: #2D76BC;
+}
+
+.cardHeaderName {
+    font-weight: bold;
+    font-size: 16px;
+}
 
 
 
