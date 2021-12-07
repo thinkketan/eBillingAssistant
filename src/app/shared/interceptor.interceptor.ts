@@ -10,18 +10,18 @@ import { Observable } from 'rxjs';
 @Injectable()
 export class InterceptorInterceptor implements HttpInterceptor {
 
-  constructor() {}
+  constructor() { }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     // return next.handle(request);
     const token = localStorage.getItem('token');
-    if (token) {     
+    if (token) {
       request = request.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json; charset=utf-8'
         }
-      }); 
+      });
     }
     return next.handle(request);
   }

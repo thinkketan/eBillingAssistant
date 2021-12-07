@@ -30,7 +30,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     FontAwesomeModule,
     MatProgressSpinnerModule,
     AgGridModule.withComponents([]),
-
     BrowserAnimationsModule
   ],
   providers: [InvoiceService,

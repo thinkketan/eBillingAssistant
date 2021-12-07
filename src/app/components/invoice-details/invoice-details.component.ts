@@ -112,7 +112,7 @@ export class InvoiceDetailsComponent implements OnInit {
     this.id = this.route.snapshot.queryParams.Id;
     this.zero = invoiceList.ZERO;
     this.one = invoiceList.ONE;
-    this.expenses = 0;
+    this.expenses = this.zero;
     this.saveButton = invoiceDetails.SAVE_BUTTTON;
     this.invoiceName = invoiceList.INVOICE_LIST;
     this.inInvoice = invoiceDetails.IN_INVOICE;
@@ -209,7 +209,6 @@ export class InvoiceDetailsComponent implements OnInit {
 
   onCellClicked($event: any) {
     if (this.editingRowIndex != $event.rowIndex) {
-      console.log($event);
       $event.api.startEditingCell({
         rowIndex: $event.rowIndex,
         colKey: $event.column.colId

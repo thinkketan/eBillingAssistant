@@ -333,7 +333,6 @@ export class InvoiceListComponent implements OnInit {
         cellRenderer: (InvoiceDate: any) => {
           return moment(InvoiceDate.createdAt).format('MM/DD/YYYY')
         }
-
       },
       {
         headerName: 'Client',
