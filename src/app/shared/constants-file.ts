@@ -42,7 +42,15 @@ export const invoiceDetails = {
     NULL_VALUE: 'NA',
     ALL_ROW_WIDTH: '150',
     DATE: '200',
-    DESCRIPTION: '400'
+    DESCRIPTION: '400',
+    ALERT_UPDATE_TITLE: 'Are you sure?',
+    ALERT_UPDATE_TEXT: 'You have unsaved changes. Do you still want to continue?',
+    ALERT_ICON_WARNING: 'warning',
+    ALERT_ICON_SUCCESS: 'success',
+    ALERT_ICON_ERROR: 'error',
+    ALERT_SUCCESSFULY_UPDATE: 'Modified Successfully!',
+    YES: 'Yes',
+    NO: 'No'
 }
 
 export const casecading = {

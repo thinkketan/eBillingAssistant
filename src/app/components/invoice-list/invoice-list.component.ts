@@ -1,14 +1,12 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
-import { AllCommunityModules, GridOptions, IDatasource, IGetRowsParams, Module } from '@ag-grid-community/all-modules';
+import { Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
+import { AllCommunityModules, Module } from '@ag-grid-community/all-modules';
 import { SetFilterModule } from '@ag-grid-enterprise/set-filter';
 import { MenuModule } from '@ag-grid-enterprise/menu';
 import { Router } from '@angular/router';
-import { invoiceList, casecading } from '../../shared/constant-file';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { invoiceList } from '../../shared/constants-file';
 import { ServerSideRowModelModule, ColumnsToolPanelModule } from '@ag-grid-enterprise/all-modules';
 import { InvoiceService } from '../../services/invoice.service';
 import { CellAggridComponent } from '../cell-aggrid/cell-aggrid.component';
-import * as _moment from 'moment';
 import * as moment from 'moment';
 
 @Component({
@@ -18,11 +16,7 @@ import * as moment from 'moment';
 })
 export class InvoiceListComponent implements OnInit {
   @ViewChild('agGridParentDiv', { read: ElementRef }) public agGridDiv: any;
-  @HostListener('window:resize', ['$event'])
-  public onResize(event: any) {
-    this.setGridColSizeAsPerWidth();
-  }
-  public modules: Module[] = [...AllCommunityModules, ...[SetFilterModule, MenuModule, ServerSideRowModelModule, ColumnsToolPanelModule]]
+  public modules: Module[];
   public agGridOption: any;
   public one: any;
   public zero: any;
@@ -44,11 +38,14 @@ export class InvoiceListComponent implements OnInit {
   public userName: any;
   public password: any;
   public rowCount: any;
-  apiSuccessFull: any;
-  gridColumnApi: any;
-  filterData: any;
+  public apiSuccessFull: any;
+  public gridColumnApi: any;
+  public filterData: any;
+  public windowHeight: any;
+  public offset: any;
 
-  constructor(private router: Router, private invoicingService: InvoiceService, private formBuilder: FormBuilder) {
+  constructor(private router: Router, private invoicingService: InvoiceService, private zone: NgZone) {
+    this.modules = [...AllCommunityModules, ...[SetFilterModule, MenuModule, ServerSideRowModelModule, ColumnsToolPanelModule]];
     this.userName = invoiceList.USER_NAME;
     this.password = invoiceList.password;
     this.one = invoiceList.ONE;
@@ -59,6 +56,17 @@ export class InvoiceListComponent implements OnInit {
     this.rowModelType = 'serverSide';
     this.serverSideStoreType = 'partial';
     this.invoiceList = invoiceList.INVOICE_LIST;
+    window.onresize = (e) => {
+      this.zone.run(() => {
+        this.windowHeight = window.innerHeight - this.offset;
+        setTimeout(() => {
+          if (!this.agGridOption || !this.agGridOption.api) {
+            return;
+          }
+          this.agGridOption.api.sizeColumnsToFit();
+        }, 500, true);
+      });
+    };
   }
 
   ngOnInit(): void {
@@ -113,7 +121,6 @@ export class InvoiceListComponent implements OnInit {
       unSortIcon: true,
       context: { componentParent: this },
       suppressContextMenu: true,
-      //  noRowsOverlayComponentParams: { noRowsMessageFunc: () => this.rowData && this.rowData.length == this.zero ? 'No matching records found for the required search' : 'No invoices to display' },
       onModelUpdated,
     }
 
@@ -128,6 +135,10 @@ export class InvoiceListComponent implements OnInit {
   onGridReady(params: any) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
+    this.gridApi.sizeColumnsToFit();
+    window.onresize = () => {
+      this.gridApi.sizeColumnsToFit();
+    }
     const userDetail = {
       userName: this.userName,
       password: this.password,
@@ -161,7 +172,6 @@ export class InvoiceListComponent implements OnInit {
               this.lastLength = data.length;
             } else {
               this.lastLength = data.lastRow;
-              // this.lastLength = data.slice(request.startRow, request.endRow);
             }
             params.success({
               rowData: data,
@@ -381,32 +391,6 @@ export class InvoiceListComponent implements OnInit {
         field: 'WorkFlowOwner'
       },
     ]
-  }
-
-  private autoSizeAll() {
-    let allColumnIds: any[] = [];
-    let gridColumnApi = this.gridApi.columnApi
-    if (gridColumnApi) {
-      gridColumnApi.getAllColumns().forEach(function (column: any) {
-        allColumnIds.push(column.colId);
-      });
-      gridColumnApi.autoSizeColumns(allColumnIds);
-    }
-  }
-
-  private setGridColSizeAsPerWidth() {
-    setTimeout(() => {
-      this.autoSizeAll();
-      let width = this.zero;
-      let gridColumnApi = this.gridApi.columnApi;
-      if (gridColumnApi) {
-        gridColumnApi.getAllColumns().forEach(function (column: any) {
-          width = width + column.getActualWidth();
-        });
-      }
-      if (this.agGridDiv && width < this.agGridDiv.nativeElement.offsetWidth)
-        this.gridApi.api.sizeColumnsToFit();
-    }, this.one);
   }
 
 }
