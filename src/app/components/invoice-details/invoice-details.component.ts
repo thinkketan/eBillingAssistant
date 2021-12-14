@@ -439,7 +439,6 @@ export class InvoiceDetailsComponent implements OnInit {
       });
   }
 
-  
   myDateParser(dateStr: string): string {
     let date = dateStr.substring(0, 13);
     let validDate = date
